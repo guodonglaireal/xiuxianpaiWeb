@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="《问道残卷》是一款即时卡牌动作、修仙魂类、Roguelite构筑游戏。卡牌不是回合指令，而是出剑、踏步、掐诀、格挡与处决。"
+    />
+    <title>问道残卷 | 即时卡牌动作修仙魂类游戏</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="官网导航">
+      <a class="brand" href="#top" aria-label="问道残卷首页">
+        <span class="brand-mark">问道</span>
+        <span>问道残卷</span>
+      </a>
+      <nav class="nav-links" aria-label="主要导航">
+        <a href="#combat">战斗</a>
+        <a href="#cards">道牌</a>
+        <a href="#boss">Boss</a>
+        <a href="#world">玄墟界</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="问道残卷首屏">
+        <canvas id="riftCanvas" aria-hidden="true"></canvas>
+        <div class="hero-shade" aria-hidden="true"></div>
+
+        <div class="hero-content">
+          <p class="eyebrow">Godot 4.x · 即时卡牌动作 · 修仙魂类 · Roguelite构筑</p>
+          <h1>问道残卷</h1>
+          <p class="hero-copy">
+            卡牌不是回合指令，而是刀、步法、法诀、格挡与临场判断。读懂敌人的起手，在正确窗口打出正确道牌，才有资格从玄墟界的残炁中活下来。
+          </p>
+          <div class="hero-actions" aria-label="页面快捷入口">
+            <a class="button primary" href="#combat">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </svg>
+              查看战斗系统
+            </a>
+            <a class="button ghost" href="#cards">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3h10a2 2 0 0 1 2 2v14l-7-3-7 3V5a2 2 0 0 1 2-2Z" />
+              </svg>
+              浏览道牌流派
+            </a>
+          </div>
+        </div>
+
+        <div class="combat-stage" aria-label="实时战斗界面概念展示">
+          <div class="boss-panel">
+            <div class="bar-label">
+              <span>血符散人</span>
+              <span>二阶段预警</span>
+            </div>
+            <div class="meter health"><span style="width: 67%"></span></div>
+            <div class="meter poise"><span style="width: 78%"></span></div>
+          </div>
+
+          <div class="intent-banner" role="status" aria-live="polite">
+            <span class="danger-dot" aria-hidden="true"></span>
+            <span id="intentName">煞影突刺</span>
+            <strong id="intentHint">红招：不可格挡，踏云步窗口即将开启</strong>
+          </div>
+
+          <div class="duel-visual" aria-hidden="true">
+            <div class="fighter player">
+              <span class="blade"></span>
+              <span class="core"></span>
+            </div>
+            <div class="slash slash-one"></div>
+            <div class="slash slash-two"></div>
+            <div class="fighter boss">
+              <span class="blood-talisman"></span>
+              <span class="core"></span>
+            </div>
+          </div>
+
+          <div class="player-hud">
+            <div class="resource">
+              <span>气血</span>
+              <strong>82</strong>
+            </div>
+            <div class="resource">
+              <span>架势</span>
+              <strong>31</strong>
+            </div>
+            <div class="resource">
+              <span>灵力</span>
+              <strong>64</strong>
+            </div>
+            <div class="resource">
+              <span>心神</span>
+              <strong>91</strong>
+            </div>
+          </div>
+
+          <div class="hand" aria-label="手牌示例">
+            <article class="combat-card active" data-card="踏云步">
+              <span class="hotkey">1</span>
+              <h3>踏云步</h3>
+              <p>闪避红招，生成反击窗口。</p>
+            </article>
+            <article class="combat-card" data-card="照影格">
+              <span class="hotkey">2</span>
+              <h3>照影格</h3>
+              <p>完美格挡可反震架势。</p>
+            </article>
+            <article class="combat-card" data-card="听风斩">
+              <span class="hotkey">3</span>
+              <h3>听风斩</h3>
+              <p>破招前摇，打断敌势。</p>
+            </article>
+            <article class="combat-card" data-card="凝神诀">
+              <span class="hotkey">4</span>
+              <h3>凝神诀</h3>
+              <p>稳住心神，加快补牌。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intro-band" id="combat">
+        <div class="section-heading">
+          <p class="eyebrow">战斗设计红线</p>
+          <h2>用卡牌完成魂类战斗判断</h2>
+          <p>
+            本作不是实时版回合卡牌，而是将“读招、接招、破绽、处决”抽象成可构筑的道牌输入。每一次出牌都意味着前摇、判定窗口、后摇和被抓硬直的风险。
+          </p>
+        </div>
+
+        <div class="principle-grid">
+          <article>
+            <span class="step-index">01</span>
+            <h3>敌人制造压力</h3>
+            <p>Boss按状态机持续出招，起手、命中点、恢复期与延迟节奏共同压缩玩家判断空间。</p>
+          </article>
+          <article>
+            <span class="step-index">02</span>
+            <h3>时机决定生死</h3>
+            <p>普通招式可格挡，红色危险招式必须闪避，可破招窗口需要主动抢断。</p>
+          </article>
+          <article>
+            <span class="step-index">03</span>
+            <h3>构筑塑造风格</h3>
+            <p>同一场Boss战可以被格挡反震、雷法爆发、符箓控制、血修代价或身法游斗改写。</p>
+          </article>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-track" aria-hidden="true">
+            <span class="warning-zone"></span>
+            <span class="break-zone"></span>
+            <span class="execute-zone"></span>
+          </div>
+          <div class="timeline-copy">
+            <h3>实时双向出牌轴</h3>
+            <p>玩家手牌持续流转，Boss招式持续推进。看见血咒蓄力时打出听风斩，是破招；看见煞影突刺时打出踏云步，是求生；看见破绽期时押掌心雷，才是贪刀。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section resource-section">
+        <div class="section-heading compact">
+          <p class="eyebrow">HUD信息组织</p>
+          <h2>清楚得像卡牌游戏，紧张得像动作游戏</h2>
+        </div>
+        <div class="resource-grid">
+          <article class="resource-card blood">
+            <span>气血</span>
+            <strong>承受代价</strong>
+            <p>归零则战败；血修构筑会主动把气血变成爆发资源。</p>
+          </article>
+          <article class="resource-card spirit">
+            <span>灵力</span>
+            <strong>驱动招式</strong>
+            <p>剑诀、法术、符箓消耗灵力，并在实时战斗中恢复。</p>
+          </article>
+          <article class="resource-card poise">
+            <span>架势</span>
+            <strong>打崩防线</strong>
+            <p>完美格挡、破招与压制会积累Boss架势，满值进入破绽期。</p>
+          </article>
+          <article class="resource-card focus">
+            <span>心神</span>
+            <strong>稳定补牌</strong>
+            <p>高心神让抽牌节奏更顺；连续失误会拖慢手牌循环。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section cards-section" id="cards">
+        <div class="section-heading">
+          <p class="eyebrow">道牌体系</p>
+          <h2>每张牌都是一个动作选择</h2>
+          <p>道牌既是招式，也是风险承诺。高伤害牌往往前摇更长；格挡牌需要窗口；身法牌负责取消硬直与红招处理。</p>
+        </div>
+
+        <div class="card-type-grid">
+          <article class="type-card sword">
+            <span class="type-label">剑诀</span>
+            <h3>破竹剑 · 听风斩 · 回风斩</h3>
+            <p>主打连击、伤害与架势压制，在敌人起手或破招窗口中收益最高。</p>
+          </article>
+          <article class="type-card movement">
+            <span class="type-label">身法</span>
+            <h3>踏云步 · 缩地寸 · 燕返身</h3>
+            <p>处理不可格挡红招，拉开危险判定，并制造反击牌。</p>
+          </article>
+          <article class="type-card guard">
+            <span class="type-label">格挡</span>
+            <h3>照影格 · 玄铁守 · 借势反震</h3>
+            <p>抓住完美格挡前段，将敌人的攻势转成自己的架势压制。</p>
+          </article>
+          <article class="type-card spell">
+            <span class="type-label">法术</span>
+            <h3>掌心雷 · 寒魄诀 · 离火咒</h3>
+            <p>高消耗、高爆发或强控制，适合在破绽期赌一段长前摇。</p>
+          </article>
+          <article class="type-card talisman-card">
+            <span class="type-label">符箓</span>
+            <h3>镇魂符 · 净秽符 · 金甲符</h3>
+            <p>一次性战术调整，用来压制Boss动作、清除负面状态或补安全窗口。</p>
+          </article>
+          <article class="type-card mantra">
+            <span class="type-label">心法</span>
+            <h3>无锋心法 · 焚脉诀 · 归藏诀</h3>
+            <p>改变抽牌规则、收益结构或代价曲线，是构筑真正成型的核心。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section boss-section" id="boss">
+        <div class="boss-layout">
+          <div class="section-heading left">
+            <p class="eyebrow">垂直切片Boss</p>
+            <h2>血符散人不是打牌AI</h2>
+            <p>
+              他像动作Boss一样给出起手、连段、红招、破招窗口与二阶段变化。玩家要读动作，而不是读回合文本。
+            </p>
+            <div class="phase-switch" role="tablist" aria-label="Boss阶段">
+              <button class="phase-button active" type="button" data-phase="one" role="tab" aria-selected="true">
+                阶段一
+              </button>
+              <button class="phase-button" type="button" data-phase="two" role="tab" aria-selected="false">
+                阶段二
+              </button>
+            </div>
+          </div>
+
+          <div class="boss-card" aria-live="polite">
+            <div class="boss-portrait" aria-hidden="true">
+              <img src="./assets/blood-talisman-boss.png" alt="" />
+            </div>
+            <div class="phase-content active" data-phase-panel="one">
+              <h3>符刃三连</h3>
+              <p>三段普通攻击，可格挡、可完美。适合练习“看到起手后接照影格”的基本节奏。</p>
+              <ul>
+                <li>血咒蓄力：可被听风斩打断</li>
+                <li>煞影突刺：红招，必须闪避</li>
+                <li>纸傀压阵：慢速压迫，考验完美格挡</li>
+              </ul>
+            </div>
+            <div class="phase-content" data-phase-panel="two">
+              <h3>延迟血咒</h3>
+              <p>攻击节奏加快，红招频率提高，并加入延迟命中点。过度防守会被压低心神与抽牌节奏。</p>
+              <ul>
+                <li>同一抬手可能变成快斩或迟斩</li>
+                <li>符纸压阵会挤占安全出牌窗口</li>
+                <li>破绽期更短，处决判断更苛刻</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section world-section" id="world">
+        <div class="world-copy">
+          <p class="eyebrow">原创世界观</p>
+          <h2>玄墟界：残炁能助人突破，也会污染心神</h2>
+          <p>
+            玩家是一名被宗门当作试药炉鼎的外门弟子。洞府崩塌后，他获得残卷《无名道箓》；残卷不会赐予力量，只会把招式、记忆、法术和执念转化为道牌。
+          </p>
+        </div>
+        <div class="world-panels">
+          <article>
+            <h3>凡人入道</h3>
+            <p>修行不是开挂变强，而是在宗门压迫、资源残酷与机缘代价之间持续交换。</p>
+          </article>
+          <article>
+            <h3>飞升献祭</h3>
+            <p>主线从逃离宗门开始，逐步发现所谓飞升也许不是超脱，而是一场献祭。</p>
+          </article>
+          <article>
+            <h3>强牌有价</h3>
+            <p>每张强力道牌都像危险功法：越强、越快、越接近失控。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section build-section">
+        <div class="section-heading">
+          <p class="eyebrow">流派方向</p>
+          <h2>同一套实时规则，长出不同战斗性格</h2>
+        </div>
+        <div class="build-list">
+          <article>
+            <span>剑修格挡流</span>
+            <p>完美格挡、反击、破架势。敌人越猛，反打越狠。</p>
+          </article>
+          <article>
+            <span>雷法爆发流</span>
+            <p>等待破绽、赌长前摇，一道掌心雷炸掉血条。</p>
+          </article>
+          <article>
+            <span>符箓控制流</span>
+            <p>提前布置，把强敌关进自己的战斗节奏。</p>
+          </article>
+          <article>
+            <span>血修代价流</span>
+            <p>以血换牌、以伤换爆发，残血时进入极强状态。</p>
+          </article>
+          <article>
+            <span>身法游斗流</span>
+            <p>闪避、取消、绕后、反击，让Boss摸不到玩家。</p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <strong>问道残卷</strong>
+      <span>卡牌只是外衣，读招才决生死。</span>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
