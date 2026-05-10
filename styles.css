@@ -304,112 +304,42 @@ h1 {
 
 .duel-visual {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 190px;
+  height: 260px;
   margin: 12px 0;
   overflow: hidden;
   border: 1px solid rgba(240, 215, 170, 0.12);
   border-radius: 8px;
-  background:
-    repeating-linear-gradient(90deg, rgba(240, 215, 170, 0.04) 0 1px, transparent 1px 58px),
-    linear-gradient(180deg, rgba(57, 183, 124, 0.09), rgba(143, 29, 32, 0.11));
+  background: #120f0d;
+  box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.54);
+}
+
+.duel-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .duel-visual::before {
   content: "";
   position: absolute;
-  left: 12%;
-  right: 12%;
-  bottom: 34px;
-  height: 2px;
-  background: rgba(240, 215, 170, 0.22);
-}
-
-.fighter {
-  position: relative;
-  width: 150px;
-  height: 190px;
-  margin: 0 48px;
-}
-
-.fighter .core {
-  position: absolute;
-  left: 44px;
-  bottom: 28px;
-  width: 66px;
-  height: 116px;
-  border: 2px solid rgba(240, 215, 170, 0.6);
-  border-radius: 38px 38px 12px 12px;
-  background: linear-gradient(180deg, rgba(240, 215, 170, 0.24), rgba(16, 13, 11, 0.62));
-}
-
-.fighter.player .blade {
-  position: absolute;
-  z-index: 3;
-  left: 88px;
-  bottom: 82px;
-  width: 128px;
-  height: 7px;
-  transform: rotate(-18deg);
-  transform-origin: left center;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--aqua), var(--bone));
-  box-shadow: 0 0 26px rgba(104, 216, 207, 0.55);
-}
-
-.fighter.boss .core {
-  border-color: rgba(217, 74, 43, 0.72);
-  background: linear-gradient(180deg, rgba(143, 29, 32, 0.42), rgba(16, 13, 11, 0.68));
-}
-
-.blood-talisman {
-  position: absolute;
-  z-index: 4;
-  left: 28px;
-  top: 30px;
-  width: 94px;
-  height: 126px;
-  transform: rotate(8deg);
-  border: 1px solid rgba(217, 74, 43, 0.62);
-  border-radius: 6px;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background:
-    linear-gradient(90deg, transparent 20%, rgba(143, 29, 32, 0.34) 20% 23%, transparent 23% 50%, rgba(143, 29, 32, 0.34) 50% 53%, transparent 53%),
-    #d8be82;
-  box-shadow: 0 0 34px rgba(217, 74, 43, 0.34);
+    linear-gradient(90deg, rgba(16, 13, 11, 0.18), transparent 24%, transparent 76%, rgba(16, 13, 11, 0.2)),
+    linear-gradient(180deg, rgba(16, 13, 11, 0.2), transparent 34%, rgba(16, 13, 11, 0.3));
 }
 
-.blood-talisman::after {
-  content: "";
+.duel-shine {
   position: absolute;
-  inset: 18px;
-  border: 2px solid var(--blood);
-  border-radius: 50%;
-}
-
-.slash {
-  position: absolute;
-  width: 260px;
-  height: 16px;
-  border-radius: 999px;
-  filter: blur(0.4px);
-}
-
-.slash-one {
-  left: 35%;
-  top: 88px;
-  transform: rotate(-23deg);
-  background: linear-gradient(90deg, transparent, var(--aqua), transparent);
-  animation: slashPulse 2.4s ease-in-out infinite;
-}
-
-.slash-two {
-  right: 24%;
-  bottom: 72px;
-  transform: rotate(17deg);
-  background: linear-gradient(90deg, transparent, var(--vermillion), transparent);
-  animation: slashPulseReverse 2.4s ease-in-out 0.8s infinite;
+  z-index: 2;
+  inset: -35% -25%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 34%, rgba(104, 216, 207, 0.24) 47%, rgba(255, 246, 227, 0.18) 50%, transparent 62%);
+  mix-blend-mode: screen;
+  animation: duelShine 4.8s ease-in-out infinite;
 }
 
 .player-hud {
@@ -988,27 +918,15 @@ h1 {
   color: var(--paper);
 }
 
-@keyframes slashPulse {
+@keyframes duelShine {
   0%,
   100% {
-    opacity: 0.18;
-    transform: translateX(-12px) rotate(-23deg);
+    opacity: 0;
+    transform: translateX(-32%) rotate(0deg);
   }
-  45% {
-    opacity: 0.95;
-    transform: translateX(16px) rotate(-23deg);
-  }
-}
-
-@keyframes slashPulseReverse {
-  0%,
-  100% {
-    opacity: 0.18;
-    transform: translateX(12px) rotate(17deg);
-  }
-  45% {
-    opacity: 0.95;
-    transform: translateX(-16px) rotate(17deg);
+  48% {
+    opacity: 1;
+    transform: translateX(26%) rotate(0deg);
   }
 }
 
@@ -1017,8 +935,7 @@ h1 {
     scroll-behavior: auto;
   }
 
-  .slash-one,
-  .slash-two,
+  .duel-shine,
   .combat-card {
     animation: none;
     transition: none;
@@ -1134,15 +1051,6 @@ h1 {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .fighter {
-    width: 120px;
-    margin: 0 20px;
-  }
-
-  .fighter.player .blade {
-    width: 92px;
-  }
-
   .build-list {
     grid-template-columns: 1fr;
   }
@@ -1192,11 +1100,6 @@ h1 {
 
   .duel-visual {
     height: 210px;
-  }
-
-  .fighter {
-    margin: 0 6px;
-    transform: scale(0.84);
   }
 
   .hand {
