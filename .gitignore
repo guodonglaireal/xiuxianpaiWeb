@@ -1,3 +1,10 @@
 screenshot-*.png
 assets/combat-demo.gif
 tools/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
